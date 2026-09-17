@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#090b10" />
+  <title>Wave</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-block">
+        <h1>Wave</h1>
+        <p id="trackLabel">Demo geometrica</p>
+      </div>
+      <div class="midi-actions">
+        <button id="libraryBtn" class="ghost-btn" type="button" aria-haspopup="dialog" aria-controls="midiLibrary">Elenco MIDI</button>
+        <button id="loadBtn" class="ghost-btn" type="button">Carica MIDI</button>
+      </div>
+      <input id="midiInput" type="file" accept=".mid,.midi,audio/midi,audio/x-midi" hidden />
+    </header>
+
+    <section id="midiLibrary" class="midi-library" aria-hidden="true">
+      <div class="library-backdrop" data-close-library></div>
+      <div class="library-sheet" role="dialog" aria-modal="true" aria-labelledby="libraryTitle">
+        <div class="library-handle" aria-hidden="true"></div>
+        <div class="library-head">
+          <div>
+            <h2 id="libraryTitle">Elenco MIDI</h2>
+            <p>Scegli un brano dalla libreria di Wave.</p>
+          </div>
+          <button id="libraryCloseBtn" class="close-btn" type="button" aria-label="Chiudi elenco MIDI">×</button>
+        </div>
+        <div id="libraryList" class="library-list" aria-live="polite">
+          <p class="library-message">Caricamento libreria…</p>
+        </div>
+        <p id="libraryHint" class="library-hint">I file vengono letti dalla cartella <code>midi/</code>.</p>
+      </div>
+    </section>
+
+    <section class="visual-stage" aria-label="Visualizzatore musicale">
+      <canvas id="waveCanvas"></canvas>
+      <div class="hud hud-top">
+        <span id="noteHud">NOTE —</span>
+        <span id="bpmHud">100 BPM</span>
+      </div>
+      <div class="scene-hud">
+        <span id="sceneHud">PURE</span>
+        <span id="engineHud">POLYGON PULSE</span>
+      </div>
+    </section>
+
+    <section class="transport panel">
+      <button id="playBtn" class="primary-btn" type="button" aria-label="Riproduci">▶</button>
+      <button id="stopBtn" class="round-btn" type="button" aria-label="Ferma">■</button>
+      <div class="timebox">
+        <span id="timeNow">0:00</span>
+        <input id="seek" type="range" min="0" max="1000" value="0" />
+        <span id="timeTotal">0:00</span>
+      </div>
+    </section>
+
+    <section class="control-deck panel" aria-label="Controlli musicali e visuali">
+      <div class="deck-topline">
+        <div class="deck-title">
+          <span class="eyebrow">Musica</span>
+          <h2>Controlli</h2>
+        </div>
+        <div class="color-compact">
+          <label for="colorMode">Colore</label>
+          <select id="colorMode">
+            <option value="musical" selected>Musicale</option>
+            <option value="mono">Mono</option>
+            <option value="gradient">Gradiente</option>
+            <option value="spectrum">Spettro</option>
+          </select>
+          <output id="colorModeValue" class="sr-only">Musicale</output>
+        </div>
+      </div>
+
+      <div class="vertical-controls">
+        <div class="vertical-control">
+          <output id="tempoValue">100%</output>
+          <div class="vertical-track"><input id="tempo" class="vertical-range" type="range" min="50" max="180" value="100" /></div>
+          <label for="tempo">Tempo</label>
+        </div>
+        <div class="vertical-control">
+          <output id="intensityValue">100%</output>
+          <div class="vertical-track"><input id="intensity" class="vertical-range" type="range" min="20" max="180" value="100" /></div>
+          <label for="intensity">Intensità</label>
+        </div>
+        <div class="vertical-control">
+          <output id="transposeValue">0</output>
+          <div class="vertical-track"><input id="transpose" class="vertical-range" type="range" min="-12" max="12" value="0" /></div>
+          <label for="transpose">Tonalità</label>
+        </div>
+        <div class="vertical-control">
+          <output id="complexityValue">5</output>
+          <div class="vertical-track"><input id="complexity" class="vertical-range" type="range" min="1" max="10" value="5" /></div>
+          <label for="complexity">Complessità</label>
+        </div>
+        <div class="vertical-control secondary-control">
+          <output id="traceValue">42%</output>
+          <div class="vertical-track"><input id="trace" class="vertical-range" type="range" min="0" max="100" value="42" /></div>
+          <label for="trace">Scia</label>
+        </div>
+        <div class="vertical-control secondary-control">
+          <output id="glowValue">55%</output>
+          <div class="vertical-track"><input id="glow" class="vertical-range" type="range" min="0" max="100" value="55" /></div>
+          <label for="glow">Glow</label>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene-panel panel" aria-labelledby="sceneTitle">
+      <div class="section-head compact-scene-head">
+        <div>
+          <span class="eyebrow">Visuale</span>
+          <h2 id="sceneTitle">Scene</h2>
+        </div>
+        <button id="autoSceneBtn" class="mini-toggle" type="button" aria-pressed="false">AUTO</button>
+      </div>
+      <div id="scenePicker" class="scene-picker" role="list" aria-label="Scene visuali">
+        <button class="scene-chip active" type="button" data-scene="pure"><span>◇</span><strong>Pure</strong><small>geometria</small></button>
+        <button class="scene-chip" type="button" data-scene="ocean"><span>≈</span><strong>Ocean</strong><small>onde</small></button>
+        <button class="scene-chip" type="button" data-scene="hills"><span>⌁</span><strong>Hills</strong><small>colline</small></button>
+        <button class="scene-chip" type="button" data-scene="desert"><span>∿</span><strong>Desert</strong><small>dune</small></button>
+        <button class="scene-chip" type="button" data-scene="bubbles"><span>○</span><strong>Bubbles</strong><small>bolle</small></button>
+        <button class="scene-chip" type="button" data-scene="birds"><span>⌄</span><strong>Birds</strong><small>stormo</small></button>
+        <button class="scene-chip" type="button" data-scene="galaxy"><span>✦</span><strong>Galaxy</strong><small>orbite</small></button>
+        <button class="scene-chip" type="button" data-scene="bloom"><span>✺</span><strong>Bloom</strong><small>rosetta</small></button>
+      </div>
+      <p id="sceneDescription" class="scene-description">Geometria pura: poligoni armonici, simmetrie e morphing continui guidati dalle note.</p>
+    </section>
+
+    <section class="status panel compact">
+      <div><span>Brano</span><strong id="sourceStatus">Demo interna</strong></div>
+      <div><span>Eventi</span><strong id="eventCount">0</strong></div>
+      <div><span>Scena</span><strong id="sceneStatus">Pure · Polygon Pulse</strong></div>
+    </section>
+
+    <footer>
+      <p>Wave v1.4.1 · MIDI → matematica → colore → movimento</p>
+    </footer>
+  </main>
+
+  <script src="midi/library.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
