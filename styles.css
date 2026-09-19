@@ -432,3 +432,508 @@ footer { padding: 9px 0 2px; font-size: 9px; }
   .scene-chip > span { grid-row: 1; }
   .scene-chip strong { align-self: center; }
 }
+
+/* =========================================================
+   Wave v1.5.0 - Families, scene drawer and expanded controls
+   ========================================================= */
+:root { --active-family-color: #8ad8ff; }
+
+.family-panel {
+  position: relative;
+  z-index: 12;
+  margin-top: 0;
+  padding: 8px 10px 9px;
+  overflow: visible;
+}
+.family-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 7px;
+}
+.family-head h2 {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: -.015em;
+}
+.family-picker {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+}
+.family-chip {
+  --family-color: #9da7b8;
+  min-width: 0;
+  height: 54px;
+  border: 1px solid rgba(255,255,255,.075);
+  border-radius: 13px;
+  background: rgba(255,255,255,.028);
+  color: #d9dde5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 6px;
+  cursor: pointer;
+  transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease;
+}
+.family-chip:hover { transform: translateY(-1px); border-color: rgba(255,255,255,.18); }
+.family-chip .family-icon {
+  color: var(--family-color);
+  font-size: 20px;
+  line-height: 1;
+  text-shadow: 0 0 18px var(--family-color);
+}
+.family-chip strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .015em;
+}
+.family-chip.active {
+  border-color: var(--family-color);
+  background: rgba(255,255,255,.085);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.035) inset, 0 0 22px rgba(255,255,255,.04);
+}
+.family-chip.active .family-icon { color: #fff; }
+
+.scene-drawer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 5px);
+  z-index: 20;
+  padding: 9px 10px 10px;
+  border: 1px solid rgba(255,255,255,.11);
+  border-radius: 17px;
+  background: rgba(18, 21, 27, .965);
+  box-shadow: 0 18px 45px rgba(0,0,0,.45);
+  backdrop-filter: blur(20px);
+  opacity: 0;
+  transform: translateY(-8px) scale(.99);
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity .16s ease, transform .16s ease, visibility .16s ease;
+}
+.scene-drawer.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  visibility: visible;
+}
+.scene-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 2px 8px;
+}
+.scene-drawer-head > div { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.scene-drawer-head strong { font-size: 10px; color: #9ba4b2; font-weight: 600; }
+.scene-family-label {
+  --family-color: #8ad8ff;
+  color: var(--family-color);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.drawer-close {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 50%;
+  background: rgba(255,255,255,.035);
+  color: #c7ccd5;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.scene-drawer .scene-picker {
+  display: flex;
+  gap: 7px;
+  padding: 0 0 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+}
+.scene-drawer .scene-picker::-webkit-scrollbar { display: none; }
+.scene-drawer .scene-chip {
+  flex: 1 0 min(148px, 31%);
+  min-width: 108px;
+  min-height: 50px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
+  align-content: center;
+  gap: 3px;
+  padding: 7px 9px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.07);
+  background: rgba(255,255,255,.025);
+  text-align: left;
+}
+.scene-drawer .scene-chip strong {
+  font-size: 10px;
+  color: #e4e7ec;
+}
+.scene-drawer .scene-chip small {
+  display: block;
+  margin: 0;
+  color: #777f8b;
+  font-size: 8px;
+}
+.scene-drawer .scene-chip.active {
+  border-color: var(--family-color);
+  background: rgba(255,255,255,.08);
+  box-shadow: inset 3px 0 0 var(--family-color);
+}
+.scene-drawer .scene-description {
+  margin: 0;
+  padding: 7px 2px 0;
+  border-top: 1px solid rgba(255,255,255,.055);
+  color: #89919d;
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.family-panel + .visual-stage { margin-top: 8px; }
+.scene-hud span:first-child { color: var(--active-family-color); text-shadow: 0 0 18px rgba(255,255,255,.12); }
+
+/* Ten live controls stay in a single compact row. */
+.vertical-controls {
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 5px;
+}
+.vertical-control {
+  height: 145px;
+  padding: 5px 2px 6px;
+  grid-template-rows: 21px 1fr 19px;
+  border-radius: 11px;
+}
+.vertical-control.accent-control {
+  background: rgba(255,255,255,.032);
+  border-color: rgba(255,255,255,.075);
+}
+.vertical-track { width: 30px; height: 94px; }
+.vertical-range { width: 94px !important; }
+.vertical-control output { font-size: 9px; }
+.vertical-control label { font-size: 8.7px; }
+.label-short { display: none; }
+
+/* A slightly stronger visual cue for the four new controls. */
+.accent-control input[type="range"]::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px rgba(255,255,255,.065), 0 0 15px rgba(255,255,255,.08);
+}
+
+@media (max-width: 700px) {
+  .family-panel { padding: 7px 7px 8px; }
+  .family-head { margin-bottom: 6px; }
+  .family-picker { gap: 4px; }
+  .family-chip { height: 46px; border-radius: 10px; padding: 0; }
+  .family-chip .family-icon { font-size: 18px; }
+  .family-chip strong { display: none; }
+  .scene-drawer { top: calc(100% + 4px); padding: 8px 8px 9px; border-radius: 14px; }
+  .scene-drawer .scene-chip { flex-basis: 124px; min-width: 112px; min-height: 46px; padding: 6px 8px; }
+  .scene-drawer .scene-description { font-size: 8.5px; }
+
+  .vertical-controls { gap: 3px; }
+  .vertical-control {
+    height: 128px;
+    padding: 4px 0 5px;
+    grid-template-rows: 18px 1fr 17px;
+    border-radius: 9px;
+  }
+  .vertical-track { width: 27px; height: 82px; }
+  .vertical-range { width: 82px !important; }
+  .vertical-control output { font-size: 8px; letter-spacing: -.02em; }
+  .vertical-control label { font-size: 7.4px; }
+  .label-long { display: none; }
+  .label-short { display: inline; }
+}
+
+@media (max-width: 430px) {
+  .app-shell { padding-left: 7px; padding-right: 7px; }
+  .family-panel { border-radius: 15px; }
+  .family-head h2 { font-size: 13px; }
+  .family-head .eyebrow { display: none; }
+  .family-chip { height: 42px; }
+  .family-chip .family-icon { font-size: 17px; }
+  .mini-toggle { min-width: 55px; padding: 7px 9px; font-size: 9px; }
+  .control-deck { padding: 7px 6px 8px; }
+  .deck-topline { margin-bottom: 4px; }
+  .vertical-controls { gap: 2px; }
+  .vertical-control { height: 119px; }
+  .vertical-track { width: 26px; height: 75px; }
+  .vertical-range { width: 75px !important; }
+  .vertical-control output { font-size: 7.3px; }
+  .vertical-control label { font-size: 6.9px; }
+  .scene-drawer-head strong { display: none; }
+  .scene-drawer .scene-chip { min-width: 106px; flex-basis: 106px; }
+}
+
+
+/* =========================================================
+   Wave v1.5.1 - sensitivity presets and quick reset buttons
+   ========================================================= */
+.control-power {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.control-power-label {
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-weight: 700;
+}
+.power-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: nowrap;
+}
+.power-btn {
+  min-width: 58px;
+  height: 31px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.09);
+  background: rgba(255,255,255,.04);
+  color: #d6dbe4;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  cursor: pointer;
+  transition: transform .14s ease, background .14s ease, border-color .14s ease, box-shadow .14s ease, color .14s ease;
+}
+.power-btn:hover { transform: translateY(-1px); }
+.power-btn[aria-pressed="true"] {
+  color: #fff;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.03) inset, 0 0 18px rgba(255,255,255,.06);
+}
+.power-low { border-color: rgba(91, 208, 115, .3); }
+.power-medium { border-color: rgba(228, 194, 68, .3); }
+.power-high { border-color: rgba(228, 88, 88, .32); }
+.power-low[aria-pressed="true"] { background: rgba(91, 208, 115, .18); border-color: rgba(91, 208, 115, .95); }
+.power-medium[aria-pressed="true"] { background: rgba(228, 194, 68, .18); border-color: rgba(228, 194, 68, .95); }
+.power-high[aria-pressed="true"] { background: rgba(228, 88, 88, .2); border-color: rgba(228, 88, 88, .96); }
+
+.vertical-control {
+  grid-template-rows: 21px 1fr 18px 18px;
+}
+.control-reset {
+  width: 24px;
+  height: 18px;
+  display: inline-grid;
+  place-items: center;
+  margin-top: 1px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.085);
+  background: rgba(255,255,255,.03);
+  color: #acb5c2;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform .12s ease, border-color .12s ease, color .12s ease, background .12s ease, box-shadow .16s ease;
+}
+.control-reset:hover {
+  transform: translateY(-1px);
+  color: #edf1f6;
+  border-color: rgba(255,255,255,.18);
+  background: rgba(255,255,255,.05);
+}
+.control-reset.pulse {
+  box-shadow: 0 0 0 3px rgba(255,255,255,.06), 0 0 14px rgba(255,255,255,.08);
+}
+
+@media (max-width: 700px) {
+  .deck-topline {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .control-power {
+    order: 2;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .color-compact {
+    order: 3;
+    margin-left: auto;
+  }
+  .power-btn {
+    min-width: 0;
+    flex: 1 1 0;
+    height: 29px;
+    padding: 0 8px;
+    font-size: 9.5px;
+  }
+  .vertical-control {
+    grid-template-rows: 18px 1fr 16px 15px;
+  }
+  .control-reset {
+    width: 21px;
+    height: 15px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 430px) {
+  .control-power {
+    gap: 6px;
+    align-items: center;
+  }
+  .control-power-label {
+    font-size: 8.5px;
+  }
+  .power-buttons {
+    gap: 4px;
+    flex: 1 1 auto;
+  }
+  .power-btn {
+    height: 27px;
+    padding: 0 7px;
+    font-size: 8.5px;
+    border-radius: 9px;
+  }
+  .vertical-control {
+    grid-template-rows: 17px 1fr 15px 14px;
+  }
+  .control-reset {
+    width: 19px;
+    height: 14px;
+    font-size: 9px;
+  }
+}
+
+
+/* =========================================================
+   Wave v1.7.0 - visual console rails + independent visual speed
+   ========================================================= */
+.visual-console {
+  position: relative;
+  margin-top: 8px;
+}
+.visual-console .visual-stage { margin-top: 0; }
+.family-panel + .visual-console { margin-top: 8px; }
+
+.side-control-rail {
+  position: absolute;
+  z-index: 7;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  grid-template-columns: repeat(2, 42px);
+  gap: 5px;
+  padding: 6px;
+  border: 1px solid rgba(255,255,255,.075);
+  border-radius: 15px;
+  background: linear-gradient(180deg, rgba(12,14,19,.76), rgba(8,10,14,.60));
+  box-shadow: 0 10px 32px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.035);
+  backdrop-filter: blur(7px);
+}
+.side-control-left { left: 8px; }
+.side-control-right { right: 8px; }
+.side-control.vertical-control {
+  width: 42px;
+  height: 154px;
+  padding: 5px 1px 5px;
+  grid-template-rows: 20px 1fr 16px 16px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.018);
+}
+.side-control .vertical-track { width: 26px; height: 96px; }
+.side-control .vertical-range { width: 96px !important; }
+.side-control output { font-size: 8px; }
+.side-control label { font-size: 7.2px; }
+.side-control .label-long { display: none; }
+.side-control .label-short { display: inline; }
+.side-control .control-reset { width: 20px; height: 14px; font-size: 9px; }
+.speed-control {
+  border-color: rgba(106,183,255,.18) !important;
+  box-shadow: inset 0 0 18px rgba(80,160,255,.035);
+}
+
+/* Seven deck controls are deliberately split over two compact rows. */
+.control-deck .vertical-controls {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+.control-deck .vertical-control {
+  height: 118px;
+  padding: 4px 3px 5px;
+  grid-template-rows: 18px 1fr 16px 15px;
+}
+.control-deck .vertical-track { height: 70px; }
+.control-deck .vertical-range { width: 70px !important; }
+.control-deck .vertical-control output { font-size: 8px; }
+.control-deck .vertical-control label { font-size: 8px; }
+
+@media (max-width: 700px) {
+  .side-control-rail {
+    grid-template-columns: repeat(2, 34px);
+    gap: 3px;
+    padding: 4px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(10,12,17,.64), rgba(8,10,14,.48));
+  }
+  .side-control-left { left: 4px; }
+  .side-control-right { right: 4px; }
+  .side-control.vertical-control {
+    width: 34px;
+    height: 132px;
+    grid-template-rows: 17px 1fr 14px 14px;
+  }
+  .side-control .vertical-track { width: 23px; height: 80px; }
+  .side-control .vertical-range { width: 80px !important; }
+  .side-control output { font-size: 7px; }
+  .side-control label { font-size: 6.5px; }
+  .side-control .control-reset { width: 18px; height: 13px; font-size: 8px; }
+
+  .control-deck .vertical-controls { gap: 4px; }
+  .control-deck .vertical-control { height: 108px; }
+  .control-deck .vertical-track { height: 63px; }
+  .control-deck .vertical-range { width: 63px !important; }
+}
+
+@media (max-width: 430px) {
+  .side-control-rail {
+    grid-template-columns: repeat(2, 29px);
+    gap: 2px;
+    padding: 3px;
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+  }
+  .side-control-left { left: 2px; }
+  .side-control-right { right: 2px; }
+  .side-control.vertical-control {
+    width: 29px;
+    height: 116px;
+    padding-left: 0;
+    padding-right: 0;
+    grid-template-rows: 15px 1fr 12px 12px;
+  }
+  .side-control .vertical-track { width: 20px; height: 68px; }
+  .side-control .vertical-range { width: 68px !important; }
+  .side-control output { font-size: 6.2px; }
+  .side-control label { font-size: 5.8px; }
+  .side-control .control-reset { width: 16px; height: 11px; font-size: 7px; }
+
+  .control-deck .vertical-controls { gap: 3px; }
+  .control-deck .vertical-control { height: 101px; }
+  .control-deck .vertical-track { height: 57px; }
+  .control-deck .vertical-range { width: 57px !important; }
+  .control-deck .vertical-control output { font-size: 7px; }
+  .control-deck .vertical-control label { font-size: 7px; }
+}

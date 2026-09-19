@@ -40,15 +40,65 @@
       </div>
     </section>
 
-    <section class="visual-stage" aria-label="Visualizzatore musicale">
-      <canvas id="waveCanvas"></canvas>
-      <div class="hud hud-top">
-        <span id="noteHud">NOTE —</span>
-        <span id="bpmHud">100 BPM</span>
+    <section class="family-panel panel" aria-labelledby="familyTitle">
+      <div class="family-head">
+        <div>
+          <span class="eyebrow">Visuale</span>
+          <h2 id="familyTitle">Famiglie</h2>
+        </div>
+        <button id="autoSceneBtn" class="mini-toggle" type="button" aria-pressed="false">AUTO</button>
       </div>
-      <div class="scene-hud">
-        <span id="sceneHud">PURE</span>
-        <span id="engineHud">POLYGON PULSE</span>
+      <div id="familyPicker" class="family-picker" role="list" aria-label="Famiglie visuali"></div>
+      <div id="sceneDrawer" class="scene-drawer" aria-hidden="true">
+        <div class="scene-drawer-head">
+          <div>
+            <span id="sceneFamilyLabel" class="scene-family-label">Pure</span>
+            <strong>Scegli una scena</strong>
+          </div>
+          <button id="sceneDrawerClose" class="drawer-close" type="button" aria-label="Chiudi scene">×</button>
+        </div>
+        <div id="scenePicker" class="scene-picker" role="list" aria-label="Scene della famiglia selezionata"></div>
+        <p id="sceneDescription" class="scene-description">Geometria pura guidata dalle note.</p>
+      </div>
+    </section>
+
+    <section class="visual-console" aria-label="Visualizzatore musicale e leve visuali">
+      <div class="side-control-rail side-control-left" aria-label="Leve movimento e velocità">
+        <div class="vertical-control accent-control side-control">
+          <output id="movementValue">100%</output>
+          <div class="vertical-track"><input id="movement" class="vertical-range" type="range" min="0" max="200" value="100" /></div>
+          <label for="movement"><span class="label-long">Movimento</span><span class="label-short">Mov</span></label>
+        </div>
+        <div class="vertical-control accent-control side-control speed-control">
+          <output id="speedValue">100%</output>
+          <div class="vertical-track"><input id="speed" class="vertical-range" type="range" min="25" max="800" value="100" /></div>
+          <label for="speed"><span class="label-long">Velocità</span><span class="label-short">Vel</span></label>
+        </div>
+      </div>
+
+      <section class="visual-stage" aria-label="Visualizzatore musicale">
+        <canvas id="waveCanvas"></canvas>
+        <div class="hud hud-top">
+          <span id="noteHud">NOTE —</span>
+          <span id="bpmHud">100 BPM</span>
+        </div>
+        <div class="scene-hud">
+          <span id="sceneHud">PURE · PULSE</span>
+          <span id="engineHud">POLYGON PULSE</span>
+        </div>
+      </section>
+
+      <div class="side-control-rail side-control-right" aria-label="Leve scala e rotazione">
+        <div class="vertical-control accent-control side-control">
+          <output id="scaleValue">100%</output>
+          <div class="vertical-track"><input id="scale" class="vertical-range" type="range" min="50" max="200" value="100" /></div>
+          <label for="scale"><span class="label-long">Scala</span><span class="label-short">Scl</span></label>
+        </div>
+        <div class="vertical-control accent-control side-control">
+          <output id="rotationValue">0%</output>
+          <div class="vertical-track"><input id="rotation" class="vertical-range" type="range" min="-150" max="150" value="0" /></div>
+          <label for="rotation"><span class="label-long">Rotazione</span><span class="label-short">Rot</span></label>
+        </div>
       </div>
     </section>
 
@@ -65,8 +115,16 @@
     <section class="control-deck panel" aria-label="Controlli musicali e visuali">
       <div class="deck-topline">
         <div class="deck-title">
-          <span class="eyebrow">Musica</span>
+          <span class="eyebrow">Musica + Visuale</span>
           <h2>Controlli</h2>
+        </div>
+        <div class="control-power" aria-label="Livello risposta controlli">
+          <span class="control-power-label">Risposta</span>
+          <div class="power-buttons" id="powerButtons" role="group" aria-label="Sensibilità controlli">
+            <button id="powerLowBtn" class="power-btn power-low" type="button" data-power="low" aria-pressed="false">Low</button>
+            <button id="powerMediumBtn" class="power-btn power-medium" type="button" data-power="medium" aria-pressed="true">Medium</button>
+            <button id="powerHighBtn" class="power-btn power-high" type="button" data-power="high" aria-pressed="false">High</button>
+          </div>
         </div>
         <div class="color-compact">
           <label for="colorMode">Colore</label>
@@ -83,66 +141,50 @@
       <div class="vertical-controls">
         <div class="vertical-control">
           <output id="tempoValue">100%</output>
-          <div class="vertical-track"><input id="tempo" class="vertical-range" type="range" min="50" max="180" value="100" /></div>
-          <label for="tempo">Tempo</label>
+          <div class="vertical-track"><input id="tempo" class="vertical-range" type="range" min="35" max="240" value="100" /></div>
+          <label for="tempo"><span class="label-long">Tempo</span><span class="label-short">Tmp</span></label>
         </div>
         <div class="vertical-control">
           <output id="intensityValue">100%</output>
-          <div class="vertical-track"><input id="intensity" class="vertical-range" type="range" min="20" max="180" value="100" /></div>
-          <label for="intensity">Intensità</label>
+          <div class="vertical-track"><input id="intensity" class="vertical-range" type="range" min="20" max="250" value="100" /></div>
+          <label for="intensity"><span class="label-long">Intensità</span><span class="label-short">Int</span></label>
         </div>
         <div class="vertical-control">
           <output id="transposeValue">0</output>
-          <div class="vertical-track"><input id="transpose" class="vertical-range" type="range" min="-12" max="12" value="0" /></div>
-          <label for="transpose">Tonalità</label>
+          <div class="vertical-track"><input id="transpose" class="vertical-range" type="range" min="-24" max="24" value="0" /></div>
+          <label for="transpose"><span class="label-long">Tonalità</span><span class="label-short">Ton</span></label>
         </div>
         <div class="vertical-control">
-          <output id="complexityValue">5</output>
-          <div class="vertical-track"><input id="complexity" class="vertical-range" type="range" min="1" max="10" value="5" /></div>
-          <label for="complexity">Complessità</label>
+          <output id="complexityValue">6</output>
+          <div class="vertical-track"><input id="complexity" class="vertical-range" type="range" min="1" max="12" value="6" /></div>
+          <label for="complexity"><span class="label-long">Complessità</span><span class="label-short">Cmp</span></label>
         </div>
         <div class="vertical-control secondary-control">
           <output id="traceValue">42%</output>
           <div class="vertical-track"><input id="trace" class="vertical-range" type="range" min="0" max="100" value="42" /></div>
-          <label for="trace">Scia</label>
+          <label for="trace"><span class="label-long">Scia</span><span class="label-short">Scia</span></label>
         </div>
         <div class="vertical-control secondary-control">
           <output id="glowValue">55%</output>
-          <div class="vertical-track"><input id="glow" class="vertical-range" type="range" min="0" max="100" value="55" /></div>
-          <label for="glow">Glow</label>
+          <div class="vertical-track"><input id="glow" class="vertical-range" type="range" min="0" max="150" value="55" /></div>
+          <label for="glow"><span class="label-long">Glow</span><span class="label-short">Glow</span></label>
+        </div>
+        <div class="vertical-control accent-control">
+          <output id="distortionValue">30%</output>
+          <div class="vertical-track"><input id="distortion" class="vertical-range" type="range" min="0" max="150" value="30" /></div>
+          <label for="distortion"><span class="label-long">Distorsione</span><span class="label-short">Dst</span></label>
         </div>
       </div>
-    </section>
-
-    <section class="scene-panel panel" aria-labelledby="sceneTitle">
-      <div class="section-head compact-scene-head">
-        <div>
-          <span class="eyebrow">Visuale</span>
-          <h2 id="sceneTitle">Scene</h2>
-        </div>
-        <button id="autoSceneBtn" class="mini-toggle" type="button" aria-pressed="false">AUTO</button>
-      </div>
-      <div id="scenePicker" class="scene-picker" role="list" aria-label="Scene visuali">
-        <button class="scene-chip active" type="button" data-scene="pure"><span>◇</span><strong>Pure</strong><small>geometria</small></button>
-        <button class="scene-chip" type="button" data-scene="ocean"><span>≈</span><strong>Ocean</strong><small>onde</small></button>
-        <button class="scene-chip" type="button" data-scene="hills"><span>⌁</span><strong>Hills</strong><small>colline</small></button>
-        <button class="scene-chip" type="button" data-scene="desert"><span>∿</span><strong>Desert</strong><small>dune</small></button>
-        <button class="scene-chip" type="button" data-scene="bubbles"><span>○</span><strong>Bubbles</strong><small>bolle</small></button>
-        <button class="scene-chip" type="button" data-scene="birds"><span>⌄</span><strong>Birds</strong><small>stormo</small></button>
-        <button class="scene-chip" type="button" data-scene="galaxy"><span>✦</span><strong>Galaxy</strong><small>orbite</small></button>
-        <button class="scene-chip" type="button" data-scene="bloom"><span>✺</span><strong>Bloom</strong><small>rosetta</small></button>
-      </div>
-      <p id="sceneDescription" class="scene-description">Geometria pura: poligoni armonici, simmetrie e morphing continui guidati dalle note.</p>
     </section>
 
     <section class="status panel compact">
       <div><span>Brano</span><strong id="sourceStatus">Demo interna</strong></div>
       <div><span>Eventi</span><strong id="eventCount">0</strong></div>
-      <div><span>Scena</span><strong id="sceneStatus">Pure · Polygon Pulse</strong></div>
+      <div><span>Scena</span><strong id="sceneStatus">Pure · Pulse</strong></div>
     </section>
 
     <footer>
-      <p>Wave v1.4.1 · MIDI → matematica → colore → movimento</p>
+      <p>Wave v1.7.0 · Famiglie → Scene → Controlli → Musica</p>
     </footer>
   </main>
 

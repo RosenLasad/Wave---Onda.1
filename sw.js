@@ -1,4 +1,4 @@
-const CACHE = 'wave-v1.4';
+const CACHE = 'wave-v1.7.0';
 const CORE = ['./', './index.html', './styles.css', './app.js', './midi/library.js', './manifest.webmanifest'];
 
 self.addEventListener('install', event => {

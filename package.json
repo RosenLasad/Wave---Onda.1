@@ -1,7 +1,7 @@
 {
   "name": "wave-midi-visualizer",
   "private": true,
-  "version": "1.4.1",
+  "version": "1.5.2",
   "scripts": {
     "build": "node scripts/build-midi-list.js"
   }
